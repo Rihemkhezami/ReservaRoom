@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     firstname:String,
     lastname:String,
     email:String,
+    phone:Number,
     password:String
    // role: { type: String, enum: ['admin','user'] }, // Champ pour spécifier le rôle de l'utilisateur
 })

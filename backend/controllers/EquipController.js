@@ -3,6 +3,17 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 
+//Show users
+export async function showEquipments(req,res) {
+    
+    const equipements = await EquipementModel.find();
+        if(equipements){
+            res.json(equipements);
+        }else{
+            res.status(404).json({message:"Salles not found"});
+        }
+    
+}
 
 //create equipment
 export async function create(req, res) {

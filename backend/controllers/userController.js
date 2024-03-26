@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 //Signup
 export async function signup(req, res) {
-    const { firstname, lastname,email, password } = req.body;
+    const { firstname, lastname,email,phone, password } = req.body;
     try {
         // Check if the user already exists
         const existingUser = await UserModel.findOne({ email });
@@ -14,7 +14,7 @@ export async function signup(req, res) {
             return res.status(400).json({ message: "User already exists" });
         }
         // Create new user
-        const newUser = new UserModel({ firstname, lastname,email, password });
+        const newUser = new UserModel({ firstname, lastname,email,phone, password });
         await newUser.save();
         res.json({ message: "User registered successfully" });
     } catch (error) {
@@ -46,24 +46,23 @@ export async function signin (req, res) {
     }
 };
 
-//Show user
-export async function profile(req,res) {
-    const {id} = req.params;
-    const user = await UserModel.findById(id);
-        if(user){
-            res.json(user);
-        }else{
-            res.status(404).json({message:"User not found"});
-        }
-    
+
+
+export async function profile (req,res) {
+    if(!req.user){
+        return res.status('401').json({error: "You're not authenticated!"});
+    }
+    const user = await UserModel.findById(req.userId);
+
+    res.status(200).json({data: user});
 }
 
 //Edit profile
 export async function editProfile (req, res)  {
-    const {firstname, lastname, email} = req.body;
+    const {firstname, lastname, email,phone} = req.body;
     const {id}=req.params;
     try {
-        await UserModel.findByIdAndUpdate(id, {email, firstname, lastname  , email});
+        await UserModel.findByIdAndUpdate(id, {email, firstname, lastname  , email,phone});
         res.json({ message: "Profile updated successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -102,3 +101,4 @@ export async function editPassword(req,res) {
      })
      .catch(err => res.status(500).json({message:err.message}));
 }
+
